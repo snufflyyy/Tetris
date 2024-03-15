@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Tetris");
-		config.setWindowedMode(960, 640);
+		config.setWindowedMode(960, 704);
 		config.useVsync(true);
 		new Lwjgl3Application(new Tetris(), config);
 	}

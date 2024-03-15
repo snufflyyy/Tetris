@@ -1,23 +1,43 @@
 package com.snuffly.tetris.Screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.snuffly.tetris.Tetris;
 
+import java.util.ArrayList;
+
 public class MainMenu implements Screen {
     private final Tetris game;
 
-    private long lastFlashTime;
+    private final ArrayList<String> titleColors;
+
+    private long lastTitleColorChange;
 
     public MainMenu(final Tetris game) {
         this.game = game;
+
+        titleColors = new ArrayList<>();
+
+        titleColors.add("Red");
+        titleColors.add("Blue");
+        titleColors.add("Green");
+        titleColors.add("Purple");
+        titleColors.add("Orange");
+        titleColors.add("LightBlue");
+        titleColors.add("Yellow");
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.06f, 0.05f, 0.05f, 1.0f);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
+            game.setScreen(new Game(game));
+            dispose();
+        }
 
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
@@ -106,37 +126,40 @@ public class MainMenu implements Screen {
             }
 
             /////////////////////////////////////////
-            // text & stuff                        //
+            // text                                //
             /////////////////////////////////////////
 
-            game.classicFont.draw(game.batch, "made by snuffly", -135, 22);
-
-            if (TimeUtils.nanoTime() - lastFlashTime > 1000000000) {
-                game.classicFont.draw(game.batch, "press any key to play", -135, -100);
-                lastFlashTime = TimeUtils.nanoTime();
-            }
+            game.classicFont.draw(game.batch, "press any key", -120, -200);
 
             /////////////////////////////////////////
             // tetris title                        //
             /////////////////////////////////////////
 
+            // changes the colors
+            if (TimeUtils.millis() - lastTitleColorChange > 500) {
+                String temp = titleColors.getLast();
+                titleColors.removeLast();
+                titleColors.addFirst(temp);
+                lastTitleColorChange = TimeUtils.millis();
+            }
+
             // T
             game.batch.draw(
-                game.blockTextures.findRegion("Red"),
+                game.blockTextures.findRegion(titleColors.getFirst()),
                 -Tetris.tileSize * 12,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Red"),
+                game.blockTextures.findRegion(titleColors.getFirst()),
                 -Tetris.tileSize * 11,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Red"),
+                game.blockTextures.findRegion(titleColors.getFirst()),
                 -Tetris.tileSize * 10,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
@@ -145,28 +168,28 @@ public class MainMenu implements Screen {
 
             // lower part
             game.batch.draw(
-                game.blockTextures.findRegion("Red"),
+                game.blockTextures.findRegion(titleColors.getFirst()),
                 -Tetris.tileSize * 11,
                 Tetris.tileSize * 5,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Red"),
+                game.blockTextures.findRegion(titleColors.getFirst()),
                 -Tetris.tileSize * 11,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Red"),
+                game.blockTextures.findRegion(titleColors.getFirst()),
                 -Tetris.tileSize * 11,
                 Tetris.tileSize * 3,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Red"),
+                game.blockTextures.findRegion(titleColors.getFirst()),
                 -Tetris.tileSize * 11,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
@@ -175,21 +198,21 @@ public class MainMenu implements Screen {
 
             // E
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 8,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 7,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 6,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
@@ -197,30 +220,30 @@ public class MainMenu implements Screen {
             );
 
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 8,
                 Tetris.tileSize * 5,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
 
-            // middle part (idk what to call it)
+            // middle part (I don't know what to call it)
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 8,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 7,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 6,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
@@ -228,7 +251,7 @@ public class MainMenu implements Screen {
             );
 
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 8,
                 Tetris.tileSize * 3,
                 Tetris.tileSize,
@@ -237,21 +260,21 @@ public class MainMenu implements Screen {
 
             // bottom part
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 8,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 7,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Blue"),
+                game.blockTextures.findRegion(titleColors.get(1)),
                 -Tetris.tileSize * 6,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
@@ -260,21 +283,21 @@ public class MainMenu implements Screen {
 
             // second T
             game.batch.draw(
-                game.blockTextures.findRegion("Purple"),
+                game.blockTextures.findRegion(titleColors.get(2)),
                 -Tetris.tileSize * 4,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Purple"),
+                game.blockTextures.findRegion(titleColors.get(2)),
                 -Tetris.tileSize * 3,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Purple"),
+                game.blockTextures.findRegion(titleColors.get(2)),
                 -Tetris.tileSize * 2,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
@@ -283,28 +306,28 @@ public class MainMenu implements Screen {
 
             // lower part
             game.batch.draw(
-                game.blockTextures.findRegion("Purple"),
+                game.blockTextures.findRegion(titleColors.get(2)),
                 -Tetris.tileSize * 3,
                 Tetris.tileSize * 5,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Purple"),
+                game.blockTextures.findRegion(titleColors.get(2)),
                 -Tetris.tileSize * 3,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Purple"),
+                game.blockTextures.findRegion(titleColors.get(2)),
                 -Tetris.tileSize * 3,
                 Tetris.tileSize * 3,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Purple"),
+                game.blockTextures.findRegion(titleColors.get(2)),
                 -Tetris.tileSize * 3,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
@@ -313,14 +336,14 @@ public class MainMenu implements Screen {
 
             // R (this R is pretty bad, might need to redo it)
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
-                Tetris.tileSize * 1,
+                game.blockTextures.findRegion(titleColors.get(3)),
+                Tetris.tileSize,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
+                game.blockTextures.findRegion(titleColors.get(3)),
                 Tetris.tileSize * 2,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
@@ -329,7 +352,7 @@ public class MainMenu implements Screen {
 
             // bottom part of circle
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
+                game.blockTextures.findRegion(titleColors.get(3)),
                 Tetris.tileSize * 2,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
@@ -338,7 +361,7 @@ public class MainMenu implements Screen {
 
             // circle closer ig?
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
+                game.blockTextures.findRegion(titleColors.get(3)),
                 Tetris.tileSize * 3,
                 Tetris.tileSize * 5,
                 Tetris.tileSize,
@@ -347,45 +370,45 @@ public class MainMenu implements Screen {
 
             // diagonal part
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
+                game.blockTextures.findRegion(titleColors.get(3)),
                 Tetris.tileSize * 3,
                 Tetris.tileSize * 3,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
+                game.blockTextures.findRegion(titleColors.get(3)),
                 Tetris.tileSize * 3,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
 
-            // stem? (again idk what to call it)
+            // stem? (again I don't know what to call it)
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
-                Tetris.tileSize * 1,
+                game.blockTextures.findRegion(titleColors.get(3)),
+                Tetris.tileSize,
                 Tetris.tileSize * 5,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
-                Tetris.tileSize * 1,
+                game.blockTextures.findRegion(titleColors.get(3)),
+                Tetris.tileSize,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
-                Tetris.tileSize * 1,
+                game.blockTextures.findRegion(titleColors.get(3)),
+                Tetris.tileSize,
                 Tetris.tileSize * 3,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Green"),
-                Tetris.tileSize * 1,
+                game.blockTextures.findRegion(titleColors.get(3)),
+                Tetris.tileSize,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
@@ -393,21 +416,21 @@ public class MainMenu implements Screen {
 
             // I
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 5,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 6,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 7,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
@@ -416,21 +439,21 @@ public class MainMenu implements Screen {
 
             // stem?
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 6,
                 Tetris.tileSize * 5,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 6,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 6,
                 Tetris.tileSize * 3,
                 Tetris.tileSize,
@@ -439,21 +462,21 @@ public class MainMenu implements Screen {
 
             // bottom part
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 5,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 6,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("Orange"),
+                game.blockTextures.findRegion(titleColors.get(4)),
                 Tetris.tileSize * 7,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
@@ -462,30 +485,30 @@ public class MainMenu implements Screen {
 
             // S
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 11,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 10,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 9,
                 Tetris.tileSize * 6,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
 
-            // connector? (again for like the 3rd time, idk what to call this)
+            // connector? (again for like the 3rd time, I don't know what to call this)
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 9,
                 Tetris.tileSize * 5,
                 Tetris.tileSize,
@@ -494,30 +517,30 @@ public class MainMenu implements Screen {
 
             // middle part
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 11,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 10,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 9,
                 Tetris.tileSize * 4,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
 
-            // connector? (again for like the 4rd time, idk what to call this)
+            // connector? (again for like the 4th time, I don't know what to call this)
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 11,
                 Tetris.tileSize * 3,
                 Tetris.tileSize,
@@ -526,21 +549,21 @@ public class MainMenu implements Screen {
 
             // bottom part
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 11,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 10,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
                 Tetris.tileSize
             );
             game.batch.draw(
-                game.blockTextures.findRegion("LightBlue"),
+                game.blockTextures.findRegion(titleColors.get(5)),
                 Tetris.tileSize * 9,
                 Tetris.tileSize * 2,
                 Tetris.tileSize,
