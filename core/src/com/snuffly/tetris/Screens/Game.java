@@ -15,6 +15,10 @@ public class Game implements Screen {
     private final Tetris game;
 
     private final Rectangle floor;
+    private final Rectangle roof;
+
+    private final Rectangle leftWall;
+    private final Rectangle rightWall;
 
     private final Tetromino currentTetromino;
 
@@ -25,6 +29,9 @@ public class Game implements Screen {
         this.game = game;
 
         floor = new Rectangle(-Tetris.tileSize * 5, -Tetris.tileSize * 10, Tetris.tileSize * 10, Tetris.tileSize);
+        roof = new Rectangle(-Tetris.tileSize * 5, Tetris.tileSize * 10, Tetris.tileSize * 10, Tetris.tileSize);
+        leftWall = new Rectangle(-Tetris.tileSize * 5, -Tetris.tileSize * 10, Tetris.tileSize, Tetris.tileSize * 20);
+        rightWall = new Rectangle(Tetris.tileSize * 4, -Tetris.tileSize * 10, Tetris.tileSize, Tetris.tileSize * 20);
 
         // temp
         currentTetromino = new Tetromino(TetrominoType.I, game.blockTextures);
@@ -34,6 +41,7 @@ public class Game implements Screen {
         fallenBlocksCopy = new ArrayList<>(fallenBlocks);
     }
 
+    // move to tetromino class
     public void resetTetromino() {
         currentTetromino.position.y = Tetris.tileSize * 8;
         currentTetromino.position.x = 0;
@@ -52,8 +60,30 @@ public class Game implements Screen {
 
         currentTetromino.update();
 
-        // checks if the tetromino touches the floor or a block that has fallen
+        System.out.println(fallenBlocks.size());
+
+        // resets
+        currentTetromino.canMoveRight = true;
+        currentTetromino.canMoveLeft = true;
+
         for (Block ctb : currentTetromino.blocks) {
+            for (Block fb : fallenBlocks) {
+                if (ctb.position.x + Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
+                    currentTetromino.canMoveRight = false;
+                }
+                if (ctb.position.x - Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
+                    currentTetromino.canMoveLeft = false;
+                }
+            }
+
+            if (ctb.hitbox.overlaps(leftWall)) {
+                currentTetromino.canMoveLeft = false;
+            }
+            if (ctb.hitbox.overlaps(rightWall)) {
+                currentTetromino.canMoveRight = false;
+            }
+
+            // fallen block check
             for (Block fbc : fallenBlocksCopy) {
                 if (ctb.hitbox.overlaps(fbc.hitbox)) {
                     for (Block b : currentTetromino.blocks) {
@@ -67,6 +97,7 @@ public class Game implements Screen {
                 }
             }
 
+            // floor check
             if (ctb.hitbox.overlaps(floor)) {
                 for (Block b : currentTetromino.blocks) {
                     Block copy = new Block(b.texture);
@@ -86,9 +117,7 @@ public class Game implements Screen {
         game.batch.setProjectionMatrix(game.camera.combined);
         game.batch.begin();
 
-        /////////////////////////////////////////
-        // game board and background           //
-        /////////////////////////////////////////
+        // game board and background
 
         for (int x = 0; x <= game.initScreenWidth / Tetris.tileSize; x++) {
             for (int y = 0; y <= game.initScreenHeight / Tetris.tileSize; y++) {
@@ -133,9 +162,7 @@ public class Game implements Screen {
             counter--;
         }
 
-        /////////////////////////////////////////
-        // stats & related things              //
-        /////////////////////////////////////////
+        // stats & related things
 
         // left side of the board
 
@@ -184,7 +211,6 @@ public class Game implements Screen {
 
         game.classicFont.draw(game.batch, "High Score", 243, 310);
         game.classicFont.draw(game.batch, "Score", 285, 227);
-
         game.batch.end();
 
         currentTetromino.render(game.batch);

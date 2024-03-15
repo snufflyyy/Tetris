@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setTitle("Tetris");
 		config.setWindowedMode(960, 704);
-		config.useVsync(true);
+		config.useVsync(false);
 		new Lwjgl3Application(new Tetris(), config);
 	}
 }
