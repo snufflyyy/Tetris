@@ -34,6 +34,8 @@ public class Tetromino {
     public Tetromino(TetrominoType type, TextureAtlas atlas) {
         this.type = type;
         direction = TetrominoDirection.UP;
+        lastMoveTimeX = TimeUtils.millis();
+        lastMoveTimeY = TimeUtils.millis();
         moveSpeedY = normalSpeedY;
         blockTextures = atlas;
 

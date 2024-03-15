@@ -66,6 +66,8 @@ public class Game implements Screen {
         currentTetromino.canMoveRight = true;
         currentTetromino.canMoveLeft = true;
 
+        boolean added = false;
+
         for (Block ctb : currentTetromino.blocks) {
             for (Block fb : fallenBlocks) {
                 if (ctb.position.x + Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
@@ -85,7 +87,7 @@ public class Game implements Screen {
 
             // fallen block check
             for (Block fbc : fallenBlocksCopy) {
-                if (ctb.hitbox.overlaps(fbc.hitbox)) {
+                if (ctb.hitbox.overlaps(fbc.hitbox) && !added) {
                     for (Block b : currentTetromino.blocks) {
                         Block copy = new Block(b.texture);
 
@@ -94,6 +96,7 @@ public class Game implements Screen {
                         fallenBlocks.add(copy);
                     }
                     resetTetromino();
+                    added = true;
                 }
             }
 
