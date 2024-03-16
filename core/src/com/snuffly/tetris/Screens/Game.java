@@ -1,6 +1,7 @@
 package com.snuffly.tetris.Screens;
 
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.snuffly.tetris.Tetris;
@@ -14,12 +15,6 @@ import java.util.ArrayList;
 public class Game implements Screen {
     private final Tetris game;
 
-    private final Rectangle floor;
-    private final Rectangle roof;
-
-    private final Rectangle leftWall;
-    private final Rectangle rightWall;
-
     private final Tetromino currentTetromino;
 
     private final ArrayList<Block> fallenBlocks;
@@ -28,13 +23,8 @@ public class Game implements Screen {
     public Game(final Tetris game) {
         this.game = game;
 
-        floor = new Rectangle(-Tetris.tileSize * 5, -Tetris.tileSize * 10, Tetris.tileSize * 10, Tetris.tileSize);
-        roof = new Rectangle(-Tetris.tileSize * 5, Tetris.tileSize * 10, Tetris.tileSize * 10, Tetris.tileSize);
-        leftWall = new Rectangle(-Tetris.tileSize * 5, -Tetris.tileSize * 10, Tetris.tileSize, Tetris.tileSize * 20);
-        rightWall = new Rectangle(Tetris.tileSize * 4, -Tetris.tileSize * 10, Tetris.tileSize, Tetris.tileSize * 20);
-
         // temp
-        currentTetromino = new Tetromino(TetrominoType.I, game.blockTextures);
+        currentTetromino = new Tetromino(TetrominoType.O, game.blockTextures);
         currentTetromino.position.y = Tetris.tileSize * 8;
 
         fallenBlocks = new ArrayList<>();
@@ -60,8 +50,6 @@ public class Game implements Screen {
 
         currentTetromino.update();
 
-        System.out.println(fallenBlocks.size());
-
         // resets
         currentTetromino.canMoveRight = true;
         currentTetromino.canMoveLeft = true;
@@ -78,10 +66,10 @@ public class Game implements Screen {
                 }
             }
 
-            if (ctb.hitbox.overlaps(leftWall)) {
+            if (ctb.position.x <= -Tetris.tileSize * 5) {
                 currentTetromino.canMoveLeft = false;
             }
-            if (ctb.hitbox.overlaps(rightWall)) {
+            if (ctb.position.x >= Tetris.tileSize * 4) {
                 currentTetromino.canMoveRight = false;
             }
 
@@ -100,8 +88,8 @@ public class Game implements Screen {
                 }
             }
 
-            // floor check
-            if (ctb.hitbox.overlaps(floor)) {
+            // new floor check
+            if (ctb.position.y <= -Tetris.tileSize * 10) {
                 for (Block b : currentTetromino.blocks) {
                     Block copy = new Block(b.texture);
 
@@ -124,8 +112,8 @@ public class Game implements Screen {
 
         for (int x = 0; x <= game.initScreenWidth / Tetris.tileSize; x++) {
             for (int y = 0; y <= game.initScreenHeight / Tetris.tileSize; y++) {
-                game.batch.draw(game.blockTextures.findRegion(
-                    "Border"),
+                game.batch.draw(
+                    game.blockTextures.findRegion("Border"),
                     -(float) game.initScreenWidth / 2 + x * Tetris.tileSize,
                     -(float) game.initScreenHeight / 2 + y * Tetris.tileSize,
                     Tetris.tileSize,
@@ -145,14 +133,16 @@ public class Game implements Screen {
 
                     // 0 = black, other = gray
                     if (counter == 0) {
-                        game.batch.draw(game.blockTextures.findRegion("Black"),
+                        game.batch.draw(
+                            game.blockTextures.findRegion("Black"),
                             -(float) game.initScreenWidth / 2 + x * Tetris.tileSize + 9 * Tetris.tileSize,
                             -(float) game.initScreenHeight / 2 + y * Tetris.tileSize,
                             Tetris.tileSize,
                             Tetris.tileSize
                         );
                     } else {
-                        game.batch.draw(game.blockTextures.findRegion("Gray"),
+                        game.batch.draw(
+                            game.blockTextures.findRegion("Gray"),
                             -(float) game.initScreenWidth / 2 + x * Tetris.tileSize + 9 * Tetris.tileSize,
                             -(float) game.initScreenHeight / 2 + y * Tetris.tileSize,
                             Tetris.tileSize,
@@ -172,8 +162,8 @@ public class Game implements Screen {
         // next piece box
         for (int x = 0; x <= 6; x++) {
             for (int y = 0; y <= 3; y++) {
-                game.batch.draw(game.blockTextures.findRegion(
-                    "Black"),
+                game.batch.draw(
+                    game.blockTextures.findRegion("Black"),
                     -(float) game.initScreenWidth / 2 + Tetris.tileSize + x * Tetris.tileSize,
                     -(float) game.initScreenHeight / 2 + Tetris.tileSize * 17 + y * Tetris.tileSize,
                     Tetris.tileSize,
@@ -186,8 +176,8 @@ public class Game implements Screen {
         // holding piece box
         for (int x = 0; x <= 6; x++) {
             for (int y = 0; y <= 3; y++) {
-                game.batch.draw(game.blockTextures.findRegion(
-                    "Black"),
+                game.batch.draw(
+                    game.blockTextures.findRegion("Black"),
                     -(float) game.initScreenWidth / 2 + Tetris.tileSize + x * Tetris.tileSize,
                     -(float) game.initScreenHeight / 2 + Tetris.tileSize * 12 + y * Tetris.tileSize,
                     Tetris.tileSize,
@@ -202,8 +192,8 @@ public class Game implements Screen {
         // current score and high score box
         for (int x = 0; x <= 6; x++) {
             for (int y = 0; y <= 4; y++) {
-                game.batch.draw(game.blockTextures.findRegion(
-                    "Black"),
+                game.batch.draw(
+                    game.blockTextures.findRegion("Black"),
                     -(float) game.initScreenWidth / 2 + Tetris.tileSize * 22 + x * Tetris.tileSize,
                     -(float) game.initScreenHeight / 2 + Tetris.tileSize * 16 + y * Tetris.tileSize,
                     Tetris.tileSize,
@@ -214,6 +204,7 @@ public class Game implements Screen {
 
         game.classicFont.draw(game.batch, "High Score", 243, 310);
         game.classicFont.draw(game.batch, "Score", 285, 227);
+
         game.batch.end();
 
         currentTetromino.render(game.batch);

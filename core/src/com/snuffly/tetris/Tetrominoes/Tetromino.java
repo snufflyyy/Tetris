@@ -13,7 +13,7 @@ public class Tetromino {
     public TetrominoDirection direction;
 
     public static final float normalSpeedY = 500; // in millis
-    public static final float fastSpeedY = 100; // in millis
+    public static final float fastSpeedY = 25; // in millis
 
     private long lastMoveTimeX;
     private long lastMoveTimeY;
@@ -46,6 +46,9 @@ public class Tetromino {
             case I:
                 createI();
                 break;
+            case O:
+                createO();
+                break;
         }
     }
 
@@ -54,6 +57,13 @@ public class Tetromino {
         blocks[1] = new Block(blockTextures.findRegion("LightBlue"));
         blocks[2] = new Block(blockTextures.findRegion("LightBlue"));
         blocks[3] = new Block(blockTextures.findRegion("LightBlue"));
+    }
+
+    private void createO() {
+        blocks[0] = new Block(blockTextures.findRegion("Yellow"));
+        blocks[1] = new Block(blockTextures.findRegion("Yellow"));
+        blocks[2] = new Block(blockTextures.findRegion("Yellow"));
+        blocks[3] = new Block(blockTextures.findRegion("Yellow"));
     }
 
     private void rotate() {
@@ -96,53 +106,67 @@ public class Tetromino {
     public void update() {
         input();
 
-        if (type == TetrominoType.I) {
-            switch (direction) {
-                case UP:
-                    blocks[0].position.x = position.x;
-                    blocks[1].position.x = position.x;
-                    blocks[2].position.x = position.x;
-                    blocks[3].position.x = position.x;
+        switch (type) {
+            case I:
+                switch (direction) {
+                    case UP:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x;
 
-                    blocks[0].position.y = position.y + Tetris.tileSize;
-                    blocks[1].position.y = position.y;
-                    blocks[2].position.y = position.y - Tetris.tileSize;
-                    blocks[3].position.y = position.y - Tetris.tileSize * 2;
-                    break;
-                case RIGHT:
-                    blocks[0].position.x = position.x - Tetris.tileSize * 2;
-                    blocks[1].position.x = position.x - Tetris.tileSize;
-                    blocks[2].position.x = position.x;
-                    blocks[3].position.x = position.x + Tetris.tileSize;
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y - Tetris.tileSize * 2;
+                        break;
+                    case RIGHT:
+                        blocks[0].position.x = position.x - Tetris.tileSize * 2;
+                        blocks[1].position.x = position.x - Tetris.tileSize;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
 
-                    blocks[0].position.y = position.y;
-                    blocks[1].position.y = position.y;
-                    blocks[2].position.y = position.y;
-                    blocks[3].position.y = position.y;
-                    break;
-                case DOWN:
-                    blocks[0].position.x = position.x - Tetris.tileSize;
-                    blocks[1].position.x = position.x - Tetris.tileSize;
-                    blocks[2].position.x = position.x - Tetris.tileSize;
-                    blocks[3].position.x = position.x - Tetris.tileSize;
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y;
+                        break;
+                    case DOWN:
+                        blocks[0].position.x = position.x - Tetris.tileSize;
+                        blocks[1].position.x = position.x - Tetris.tileSize;
+                        blocks[2].position.x = position.x - Tetris.tileSize;
+                        blocks[3].position.x = position.x - Tetris.tileSize;
 
-                    blocks[0].position.y = position.y + Tetris.tileSize;
-                    blocks[1].position.y = position.y;
-                    blocks[2].position.y = position.y - Tetris.tileSize;
-                    blocks[3].position.y = position.y - Tetris.tileSize * 2;
-                    break;
-                case LEFT:
-                    blocks[0].position.x = position.x - Tetris.tileSize * 2;
-                    blocks[1].position.x = position.x - Tetris.tileSize;
-                    blocks[2].position.x = position.x;
-                    blocks[3].position.x = position.x + Tetris.tileSize;
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y - Tetris.tileSize * 2;
+                        break;
+                    case LEFT:
+                        blocks[0].position.x = position.x - Tetris.tileSize * 2;
+                        blocks[1].position.x = position.x - Tetris.tileSize;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
 
-                    blocks[0].position.y = position.y - Tetris.tileSize;
-                    blocks[1].position.y = position.y - Tetris.tileSize;
-                    blocks[2].position.y = position.y - Tetris.tileSize;
-                    blocks[3].position.y = position.y - Tetris.tileSize;
-                    break;
-            }
+                        blocks[0].position.y = position.y - Tetris.tileSize;
+                        blocks[1].position.y = position.y - Tetris.tileSize;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                }
+                break;
+            case O:
+                // no need to rotate the O because it is a square
+                blocks[0].position.x = position.x - Tetris.tileSize;
+                blocks[1].position.x = position.x;
+                blocks[2].position.x = position.x - Tetris.tileSize;
+                blocks[3].position.x = position.x;
+
+                blocks[0].position.y = position.y;
+                blocks[1].position.y = position.y;
+                blocks[2].position.y = position.y - Tetris.tileSize;
+                blocks[3].position.y = position.y - Tetris.tileSize;
+                break;
         }
 
         if (TimeUtils.millis() - lastMoveTimeY > moveSpeedY) {
