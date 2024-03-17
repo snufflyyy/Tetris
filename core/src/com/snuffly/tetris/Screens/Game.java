@@ -15,6 +15,10 @@ import java.util.ArrayList;
 public class Game implements Screen {
     private final Tetris game;
 
+    private static final float leftBound = -Tetris.tileSize * 5;
+    private static final float rightBound = Tetris.tileSize * 4;
+    private static final float floorBound = -Tetris.tileSize * 10;
+
     private final Tetromino currentTetromino;
 
     private final ArrayList<Block> fallenBlocks;
@@ -24,7 +28,7 @@ public class Game implements Screen {
         this.game = game;
 
         // temp
-        currentTetromino = new Tetromino(TetrominoType.O, game.blockTextures);
+        currentTetromino = new Tetromino(TetrominoType.I, game.blockTextures, leftBound, rightBound);
         currentTetromino.position.y = Tetris.tileSize * 8;
 
         fallenBlocks = new ArrayList<>();
@@ -53,11 +57,29 @@ public class Game implements Screen {
         // resets
         currentTetromino.canMoveRight = true;
         currentTetromino.canMoveLeft = true;
-
         boolean added = false;
 
         for (Block ctb : currentTetromino.blocks) {
+            // wall check
+            if (ctb.position.x < leftBound) {
+                currentTetromino.position.x += Tetris.tileSize;
+            }
+            if (ctb.position.x > rightBound) {
+                currentTetromino.position.x -= Tetris.tileSize;
+            }
+
             for (Block fb : fallenBlocks) {
+                if (ctb.position.x - Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y && currentTetromino.justRotated) {
+                    if (currentTetromino.type == TetrominoType.I) {
+                        currentTetromino.position.x += Tetris.tileSize * 2;
+                    } else {
+                        currentTetromino.position.x += Tetris.tileSize;
+                    }
+                }
+                if (ctb.position.x - Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y && currentTetromino.justRotated) {
+                    currentTetromino.position.x -= Tetris.tileSize;
+                }
+
                 if (ctb.position.x + Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
                     currentTetromino.canMoveRight = false;
                 }
@@ -66,16 +88,17 @@ public class Game implements Screen {
                 }
             }
 
-            if (ctb.position.x <= -Tetris.tileSize * 5) {
+            if (ctb.position.x <= leftBound) {
                 currentTetromino.canMoveLeft = false;
             }
-            if (ctb.position.x >= Tetris.tileSize * 4) {
+            if (ctb.position.x >= rightBound) {
                 currentTetromino.canMoveRight = false;
             }
 
             // fallen block check
             for (Block fbc : fallenBlocksCopy) {
-                if (ctb.hitbox.overlaps(fbc.hitbox) && !added) {
+                if (ctb.hitbox.overlaps(fbc.hitbox) && !added && !currentTetromino.justRotated) {
+                    added = true;
                     for (Block b : currentTetromino.blocks) {
                         Block copy = new Block(b.texture);
 
@@ -84,12 +107,11 @@ public class Game implements Screen {
                         fallenBlocks.add(copy);
                     }
                     resetTetromino();
-                    added = true;
                 }
             }
 
             // new floor check
-            if (ctb.position.y <= -Tetris.tileSize * 10) {
+            if (ctb.position.y <= floorBound && !added) {
                 for (Block b : currentTetromino.blocks) {
                     Block copy = new Block(b.texture);
 
@@ -97,6 +119,7 @@ public class Game implements Screen {
                     copy.hitbox = new Rectangle(b.hitbox);
                     fallenBlocks.add(copy);
                 }
+                added = true;
                 resetTetromino();
             }
         }
@@ -207,11 +230,11 @@ public class Game implements Screen {
 
         game.batch.end();
 
-        currentTetromino.render(game.batch);
-
         for (Block b : fallenBlocks) {
             b.render(game.batch);
         }
+
+        currentTetromino.render(game.batch);
 
     }
 

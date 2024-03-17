@@ -31,13 +31,22 @@ public class Tetromino {
     public Block[] blocks;
     public TextureAtlas blockTextures;
 
-    public Tetromino(TetrominoType type, TextureAtlas atlas) {
+    public boolean justRotated;
+
+    private final float leftBound;
+    private final float rightBound;
+
+    public Tetromino(TetrominoType type, TextureAtlas atlas, float leftBound, float rightBound) {
         this.type = type;
+        blockTextures = atlas;
+        this.leftBound = leftBound;
+        this.rightBound = rightBound;
+
         direction = TetrominoDirection.UP;
+
         lastMoveTimeX = TimeUtils.millis();
         lastMoveTimeY = TimeUtils.millis();
         moveSpeedY = normalSpeedY;
-        blockTextures = atlas;
 
         position = new Vector2();
         blocks = new Block[4];
@@ -67,20 +76,21 @@ public class Tetromino {
     }
 
     private void rotate() {
-            switch (direction) {
-                case UP:
-                    direction = TetrominoDirection.RIGHT;
-                    break;
-                case RIGHT:
-                    direction = TetrominoDirection.DOWN;
-                    break;
-                case DOWN:
-                    direction = TetrominoDirection.LEFT;
-                    break;
-                case LEFT:
-                    direction = TetrominoDirection.UP;
-                    break;
-            }
+        switch (direction) {
+            case UP:
+                direction = TetrominoDirection.RIGHT;
+                break;
+            case RIGHT:
+                direction = TetrominoDirection.DOWN;
+                break;
+            case DOWN:
+                direction = TetrominoDirection.LEFT;
+                break;
+            case LEFT:
+                direction = TetrominoDirection.UP;
+                break;
+        }
+        justRotated = true;
     }
 
     public void input() {
@@ -98,18 +108,20 @@ public class Tetromino {
             moveSpeedY = normalSpeedY;
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+        if ((Gdx.input.isKeyJustPressed(Input.Keys.UP)) && (canMoveRight || canMoveLeft)) {
             rotate();
         }
     }
 
     public void update() {
+        justRotated = false;
         input();
 
         switch (type) {
             case I:
                 switch (direction) {
                     case UP:
+                    case DOWN:
                         blocks[0].position.x = position.x;
                         blocks[1].position.x = position.x;
                         blocks[2].position.x = position.x;
@@ -121,6 +133,7 @@ public class Tetromino {
                         blocks[3].position.y = position.y - Tetris.tileSize * 2;
                         break;
                     case RIGHT:
+                    case LEFT:
                         blocks[0].position.x = position.x - Tetris.tileSize * 2;
                         blocks[1].position.x = position.x - Tetris.tileSize;
                         blocks[2].position.x = position.x;
@@ -131,28 +144,7 @@ public class Tetromino {
                         blocks[2].position.y = position.y;
                         blocks[3].position.y = position.y;
                         break;
-                    case DOWN:
-                        blocks[0].position.x = position.x - Tetris.tileSize;
-                        blocks[1].position.x = position.x - Tetris.tileSize;
-                        blocks[2].position.x = position.x - Tetris.tileSize;
-                        blocks[3].position.x = position.x - Tetris.tileSize;
 
-                        blocks[0].position.y = position.y + Tetris.tileSize;
-                        blocks[1].position.y = position.y;
-                        blocks[2].position.y = position.y - Tetris.tileSize;
-                        blocks[3].position.y = position.y - Tetris.tileSize * 2;
-                        break;
-                    case LEFT:
-                        blocks[0].position.x = position.x - Tetris.tileSize * 2;
-                        blocks[1].position.x = position.x - Tetris.tileSize;
-                        blocks[2].position.x = position.x;
-                        blocks[3].position.x = position.x + Tetris.tileSize;
-
-                        blocks[0].position.y = position.y - Tetris.tileSize;
-                        blocks[1].position.y = position.y - Tetris.tileSize;
-                        blocks[2].position.y = position.y - Tetris.tileSize;
-                        blocks[3].position.y = position.y - Tetris.tileSize;
-                        break;
                 }
                 break;
             case O:
