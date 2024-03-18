@@ -28,7 +28,7 @@ public class Game implements Screen {
         this.game = game;
 
         // temp
-        currentTetromino = new Tetromino(TetrominoType.I, game.blockTextures, leftBound, rightBound);
+        currentTetromino = new Tetromino(TetrominoType.O, game.blockTextures, leftBound, rightBound);
         currentTetromino.position.y = Tetris.tileSize * 8;
 
         fallenBlocks = new ArrayList<>();
