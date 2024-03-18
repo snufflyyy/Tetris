@@ -8,6 +8,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.snuffly.tetris.Tetris;
 
+import java.util.Random;
+
 public class Tetromino {
     public TetrominoType type;
     public TetrominoDirection direction;
@@ -33,29 +35,31 @@ public class Tetromino {
 
     public boolean justRotated;
 
-    private final float leftBound;
-    private final float rightBound;
-
-    public Tetromino(TetrominoType type, TextureAtlas atlas, float leftBound, float rightBound) {
-        this.type = type;
+    public Tetromino(TextureAtlas atlas) {
         blockTextures = atlas;
-        this.leftBound = leftBound;
-        this.rightBound = rightBound;
-
-        direction = TetrominoDirection.UP;
-
-        lastMoveTimeX = TimeUtils.millis();
-        lastMoveTimeY = TimeUtils.millis();
         moveSpeedY = normalSpeedY;
 
         position = new Vector2();
         blocks = new Block[4];
+    }
 
+    public void reset(TetrominoType type) {
+        position.y = Tetris.tileSize * 8;
+        position.x = 0;
+        direction = TetrominoDirection.UP;
+
+        lastMoveTimeX = TimeUtils.millis();
+        lastMoveTimeY = TimeUtils.millis();
+
+        createPiece(type.ordinal());
+    }
+
+    private void createPiece(int type) {
         switch (type) {
-            case I:
+            case 0:
                 createI();
                 break;
-            case O:
+            case 1:
                 createO();
                 break;
         }
@@ -66,6 +70,8 @@ public class Tetromino {
         blocks[1] = new Block(blockTextures.findRegion("LightBlue"));
         blocks[2] = new Block(blockTextures.findRegion("LightBlue"));
         blocks[3] = new Block(blockTextures.findRegion("LightBlue"));
+
+        type = TetrominoType.I;
     }
 
     private void createO() {
@@ -73,7 +79,11 @@ public class Tetromino {
         blocks[1] = new Block(blockTextures.findRegion("Yellow"));
         blocks[2] = new Block(blockTextures.findRegion("Yellow"));
         blocks[3] = new Block(blockTextures.findRegion("Yellow"));
+
+        type = TetrominoType.O;
     }
+
+    private void create
 
     private void rotate() {
         switch (direction) {

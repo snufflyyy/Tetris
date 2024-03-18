@@ -1,25 +1,29 @@
 package com.snuffly.tetris.Screens;
 
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.snuffly.tetris.Tetris;
 import com.snuffly.tetris.Tetrominoes.Block;
 import com.snuffly.tetris.Tetrominoes.Tetromino;
-import com.snuffly.tetris.Tetrominoes.TetrominoDirection;
 import com.snuffly.tetris.Tetrominoes.TetrominoType;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Game implements Screen {
     private final Tetris game;
 
+    public boolean gameOver;
+
     private static final float leftBound = -Tetris.tileSize * 5;
     private static final float rightBound = Tetris.tileSize * 4;
+    private static final float roofBound = Tetris.tileSize * 9;
     private static final float floorBound = -Tetris.tileSize * 10;
 
     private final Tetromino currentTetromino;
+
+    private final ArrayList<TetrominoType> tetrominoQueue;
 
     private final ArrayList<Block> fallenBlocks;
     private ArrayList<Block> fallenBlocksCopy;
@@ -28,20 +32,25 @@ public class Game implements Screen {
         this.game = game;
 
         // temp
-        currentTetromino = new Tetromino(TetrominoType.O, game.blockTextures, leftBound, rightBound);
+        currentTetromino = new Tetromino(game.blockTextures);
         currentTetromino.position.y = Tetris.tileSize * 8;
+
+        tetrominoQueue = new ArrayList<>(2);
+
+        addToQueue();
+
+        currentTetromino.reset(tetrominoQueue.getLast());
 
         fallenBlocks = new ArrayList<>();
         fallenBlocksCopy = new ArrayList<>(fallenBlocks);
     }
 
-    // move to tetromino class
-    public void resetTetromino() {
-        currentTetromino.position.y = Tetris.tileSize * 8;
-        currentTetromino.position.x = 0;
-        currentTetromino.direction = TetrominoDirection.UP;
+    private void addToQueue() {
+        while (tetrominoQueue.size() != 2) {
+            int rand = new Random().nextInt(TetrominoType.values().length);
 
-        fallenBlocksCopy = new ArrayList<>(fallenBlocks);
+            tetrominoQueue.add(TetrominoType.values()[rand]);
+        }
     }
 
     @Override
@@ -52,75 +61,83 @@ public class Game implements Screen {
         // updates                             //
         /////////////////////////////////////////
 
-        currentTetromino.update();
+        if (!gameOver) {
+            currentTetromino.update();
+        }
+
+        addToQueue();
+
+        System.out.println("Next Piece: " + tetrominoQueue.getLast());
 
         // resets
         currentTetromino.canMoveRight = true;
         currentTetromino.canMoveLeft = true;
         boolean added = false;
 
-        for (Block ctb : currentTetromino.blocks) {
-            // wall check
-            if (ctb.position.x < leftBound) {
-                currentTetromino.position.x += Tetris.tileSize;
-            }
-            if (ctb.position.x > rightBound) {
-                currentTetromino.position.x -= Tetris.tileSize;
-            }
-
-            for (Block fb : fallenBlocks) {
-                if (ctb.position.x - Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y && currentTetromino.justRotated) {
-                    if (currentTetromino.type == TetrominoType.I) {
-                        currentTetromino.position.x += Tetris.tileSize * 2;
-                    } else {
-                        currentTetromino.position.x += Tetris.tileSize;
-                    }
+        if (!gameOver) {
+            for (Block ctb : currentTetromino.blocks) {
+                // wall check
+                if (ctb.position.x < leftBound) {
+                    currentTetromino.position.x += Tetris.tileSize;
                 }
-                if (ctb.position.x - Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y && currentTetromino.justRotated) {
+                if (ctb.position.x > rightBound) {
                     currentTetromino.position.x -= Tetris.tileSize;
                 }
 
-                if (ctb.position.x + Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
-                    currentTetromino.canMoveRight = false;
+                for (Block fb : fallenBlocks) {
+                    // game over check
+                    if (fb.position.y >= roofBound) {
+                        gameOver = true;
+                    }
+
+                    // checks if there is a fallen block next to the current tetromino
+                    if (ctb.position.x + Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
+                        currentTetromino.canMoveRight = false;
+                    }
+                    if (ctb.position.x - Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
+                        currentTetromino.canMoveLeft = false;
+                    }
                 }
-                if (ctb.position.x - Tetris.tileSize == fb.position.x && ctb.position.y == fb.position.y) {
+
+                // checks if the left wall is next to the current tetromino
+                if (ctb.position.x <= leftBound) {
                     currentTetromino.canMoveLeft = false;
                 }
-            }
+                if (ctb.position.x >= rightBound) {
+                    currentTetromino.canMoveRight = false;
+                }
 
-            if (ctb.position.x <= leftBound) {
-                currentTetromino.canMoveLeft = false;
-            }
-            if (ctb.position.x >= rightBound) {
-                currentTetromino.canMoveRight = false;
-            }
+                // fallen block check
+                for (Block fbc : fallenBlocksCopy) {
+                    if (ctb.hitbox.overlaps(fbc.hitbox) && !added && !currentTetromino.justRotated) {
+                        added = true;
+                        for (Block b : currentTetromino.blocks) {
+                            Block copy = new Block(b.texture);
 
-            // fallen block check
-            for (Block fbc : fallenBlocksCopy) {
-                if (ctb.hitbox.overlaps(fbc.hitbox) && !added && !currentTetromino.justRotated) {
-                    added = true;
+                            copy.position.set(b.position.x, b.position.y + Tetris.tileSize);
+                            copy.hitbox = new Rectangle(b.hitbox.x, b.hitbox.y + Tetris.tileSize, Tetris.tileSize, Tetris.tileSize);
+                            fallenBlocks.add(copy);
+                        }
+                        currentTetromino.reset(tetrominoQueue.getLast());
+                        tetrominoQueue.removeLast();
+                        fallenBlocksCopy = new ArrayList<>(fallenBlocks);
+                    }
+                }
+
+                // floor check
+                if (ctb.position.y <= floorBound && !added) {
                     for (Block b : currentTetromino.blocks) {
                         Block copy = new Block(b.texture);
 
-                        copy.position.set(b.position.x, b.position.y + Tetris.tileSize);
-                        copy.hitbox = new Rectangle(b.hitbox.x, b.hitbox.y + Tetris.tileSize, Tetris.tileSize, Tetris.tileSize);
+                        copy.position.set(b.position);
+                        copy.hitbox = new Rectangle(b.hitbox);
                         fallenBlocks.add(copy);
                     }
-                    resetTetromino();
+                    added = true;
+                    currentTetromino.reset(tetrominoQueue.getLast());
+                    tetrominoQueue.removeLast();
+                    fallenBlocksCopy = new ArrayList<>(fallenBlocks);
                 }
-            }
-
-            // new floor check
-            if (ctb.position.y <= floorBound && !added) {
-                for (Block b : currentTetromino.blocks) {
-                    Block copy = new Block(b.texture);
-
-                    copy.position.set(b.position);
-                    copy.hitbox = new Rectangle(b.hitbox);
-                    fallenBlocks.add(copy);
-                }
-                added = true;
-                resetTetromino();
             }
         }
 
