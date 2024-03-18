@@ -39,6 +39,10 @@ public class Game implements Screen {
 
         addToQueue();
 
+        //while (tetrominoQueue.size() != 2) {
+        //    tetrominoQueue.add(TetrominoType.J);
+        //}
+
         currentTetromino.reset(tetrominoQueue.getLast());
 
         fallenBlocks = new ArrayList<>();
@@ -50,6 +54,26 @@ public class Game implements Screen {
             int rand = new Random().nextInt(TetrominoType.values().length);
 
             tetrominoQueue.add(TetrominoType.values()[rand]);
+        }
+    }
+
+    private void rowChecker() {
+        int count = 0;
+
+        for (int x = 0; x <= 10; x++) {
+            for (Block b : fallenBlocksCopy) {
+                if (b.position.x == Tetris.tileSize * x) {
+                    count++;
+                }
+            }
+
+            if (count == 10) {
+                for (Block b : fallenBlocksCopy) {
+                    if (b.position.x == Tetris.tileSize * x) {
+                        fallenBlocks.remove(b);
+                    }
+                }
+            }
         }
     }
 
@@ -67,12 +91,18 @@ public class Game implements Screen {
 
         addToQueue();
 
+        //while (tetrominoQueue.size() != 2) {
+        //    tetrominoQueue.add(TetrominoType.J);
+        //}
+
         System.out.println("Next Piece: " + tetrominoQueue.getLast());
 
         // resets
         currentTetromino.canMoveRight = true;
         currentTetromino.canMoveLeft = true;
         boolean added = false;
+
+        rowChecker();
 
         if (!gameOver) {
             for (Block ctb : currentTetromino.blocks) {

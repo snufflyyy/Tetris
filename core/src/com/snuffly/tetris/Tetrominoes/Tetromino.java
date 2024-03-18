@@ -62,6 +62,21 @@ public class Tetromino {
             case 1:
                 createO();
                 break;
+            case 2:
+                createS();
+                break;
+            case 3:
+                createZ();
+                break;
+            case 4:
+                createL();
+                break;
+            case 5:
+                createJ();
+                break;
+            case 6:
+                createT();
+                break;
         }
     }
 
@@ -83,7 +98,50 @@ public class Tetromino {
         type = TetrominoType.O;
     }
 
-    private void create
+    private void createS() {
+        blocks[0] = new Block(blockTextures.findRegion("Green"));
+        blocks[1] = new Block(blockTextures.findRegion("Green"));
+        blocks[2] = new Block(blockTextures.findRegion("Green"));
+        blocks[3] = new Block(blockTextures.findRegion("Green"));
+
+        type = TetrominoType.S;
+    }
+
+    private void createZ() {
+        blocks[0] = new Block(blockTextures.findRegion("Red"));
+        blocks[1] = new Block(blockTextures.findRegion("Red"));
+        blocks[2] = new Block(blockTextures.findRegion("Red"));
+        blocks[3] = new Block(blockTextures.findRegion("Red"));
+
+        type = TetrominoType.Z;
+    }
+
+    private void createJ() {
+        blocks[0] = new Block(blockTextures.findRegion("Blue"));
+        blocks[1] = new Block(blockTextures.findRegion("Blue"));
+        blocks[2] = new Block(blockTextures.findRegion("Blue"));
+        blocks[3] = new Block(blockTextures.findRegion("Blue"));
+
+        type = TetrominoType.J;
+    }
+
+    private void createL() {
+        blocks[0] = new Block(blockTextures.findRegion("Orange"));
+        blocks[1] = new Block(blockTextures.findRegion("Orange"));
+        blocks[2] = new Block(blockTextures.findRegion("Orange"));
+        blocks[3] = new Block(blockTextures.findRegion("Orange"));
+
+        type = TetrominoType.L;
+    }
+
+    private void createT() {
+        blocks[0] = new Block(blockTextures.findRegion("Purple"));
+        blocks[1] = new Block(blockTextures.findRegion("Purple"));
+        blocks[2] = new Block(blockTextures.findRegion("Purple"));
+        blocks[3] = new Block(blockTextures.findRegion("Purple"));
+
+        type = TetrominoType.T;
+    }
 
     private void rotate() {
         switch (direction) {
@@ -157,6 +215,7 @@ public class Tetromino {
 
                 }
                 break;
+
             case O:
                 // no need to rotate the O because it is a square
                 blocks[0].position.x = position.x - Tetris.tileSize;
@@ -168,6 +227,211 @@ public class Tetromino {
                 blocks[1].position.y = position.y;
                 blocks[2].position.y = position.y - Tetris.tileSize;
                 blocks[3].position.y = position.y - Tetris.tileSize;
+                break;
+
+            case S:
+                switch (direction) {
+                    case UP:
+                    case DOWN:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x - Tetris.tileSize;
+                        blocks[3].position.x = position.x - Tetris.tileSize;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case LEFT:
+                    case RIGHT:
+                        blocks[0].position.x = position.x + Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x - Tetris.tileSize;
+
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                }
+                break;
+
+            case Z:
+                switch (direction) {
+                    case UP:
+                    case DOWN:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x + Tetris.tileSize;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case LEFT:
+                    case RIGHT:
+                        blocks[0].position.x = position.x - Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
+
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                }
+                break;
+
+            case L:
+                switch (direction) {
+                    case UP:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case RIGHT:
+                        blocks[0].position.x = position.x + Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x - Tetris.tileSize;
+                        blocks[3].position.x = position.x - Tetris.tileSize;
+
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case DOWN:
+                        blocks[0].position.x = position.x - Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y + Tetris.tileSize;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case LEFT:
+                        blocks[0].position.x = position.x - Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x + Tetris.tileSize;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
+
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y + Tetris.tileSize;
+                        break;
+                }
+                break;
+
+            case J:
+                switch (direction) {
+                    case UP:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x - Tetris.tileSize;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case RIGHT:
+                        blocks[0].position.x = position.x + Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x - Tetris.tileSize;
+                        blocks[3].position.x = position.x - Tetris.tileSize;
+
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y + Tetris.tileSize;
+                        break;
+                    case DOWN:
+                        blocks[0].position.x = position.x + Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y + Tetris.tileSize;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case LEFT:
+                        blocks[0].position.x = position.x - Tetris.tileSize;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x + Tetris.tileSize;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
+
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                }
+                break;
+
+            case T:
+                switch (direction) {
+                    case UP:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x - Tetris.tileSize;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y;
+                        break;
+                    case RIGHT:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x + Tetris.tileSize;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y;
+                        break;
+                    case DOWN:
+                        blocks[0].position.x = position.x - Tetris.tileSize;
+                        blocks[1].position.x = position.x + Tetris.tileSize;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x;
+
+                        blocks[0].position.y = position.y;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y;
+                        blocks[3].position.y = position.y - Tetris.tileSize;
+                        break;
+                    case LEFT:
+                        blocks[0].position.x = position.x;
+                        blocks[1].position.x = position.x;
+                        blocks[2].position.x = position.x;
+                        blocks[3].position.x = position.x - Tetris.tileSize;
+
+                        blocks[0].position.y = position.y + Tetris.tileSize;
+                        blocks[1].position.y = position.y;
+                        blocks[2].position.y = position.y - Tetris.tileSize;
+                        blocks[3].position.y = position.y;
+                        break;
+                }
                 break;
         }
 
