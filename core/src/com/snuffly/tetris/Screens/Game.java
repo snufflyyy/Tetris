@@ -58,21 +58,30 @@ public class Game implements Screen {
     }
 
     private void rowChecker() {
-        int count = 0;
-
-        for (int x = 0; x <= 10; x++) {
-            for (Block b : fallenBlocksCopy) {
-                if (b.position.x == Tetris.tileSize * x) {
-                    count++;
+        for (int y = 0; y < 20; y++) {
+            int count = 0;
+            for (int x = 0; x < 10; x++) {
+                for (Block b : fallenBlocksCopy) {
+                    if (b.position.x == leftBound + Tetris.tileSize * x && b.position.y == floorBound + Tetris.tileSize * y) {
+                        count++;
+                    }
                 }
             }
 
             if (count == 10) {
                 for (Block b : fallenBlocksCopy) {
-                    if (b.position.x == Tetris.tileSize * x) {
+                    if (b.position.y == floorBound + Tetris.tileSize * y) {
                         fallenBlocks.remove(b);
                     }
                 }
+
+                for (Block b : fallenBlocks) {
+                    if (b.position.y != floorBound && b.position.y > floorBound + Tetris.tileSize * y) {
+                        b.position.y -= Tetris.tileSize;
+                        b.hitbox.y -= Tetris.tileSize;
+                    }
+                }
+                fallenBlocksCopy = new ArrayList<>(fallenBlocks);
             }
         }
     }
@@ -94,8 +103,6 @@ public class Game implements Screen {
         //while (tetrominoQueue.size() != 2) {
         //    tetrominoQueue.add(TetrominoType.J);
         //}
-
-        System.out.println("Next Piece: " + tetrominoQueue.getLast());
 
         // resets
         currentTetromino.canMoveRight = true;
